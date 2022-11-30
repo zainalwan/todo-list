@@ -1,0 +1,8 @@
+services:
+  postgres:
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: todo
+      POSTGRES_USER: zain
+      POSTGRES_PASSWORD: ecfbd4dbebe2a64a374bbf666deb5ccb
