@@ -1,7 +1,7 @@
-import { DataSource } from 'typeorm';
 import * as settings from './settings';
-import { migrations } from './migrations';
+import { DataSource } from 'typeorm';
 import { entities } from './entities';
+import { migrations } from './migrations';
 
 export const dataSource: DataSource = new DataSource({
   type: 'postgres',

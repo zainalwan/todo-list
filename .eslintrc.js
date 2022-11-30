@@ -55,5 +55,8 @@ module.exports = {
     "prefer-const": [
       "off",
     ],
+    "sort-imports": [
+      "error",
+    ],
   }
 };
