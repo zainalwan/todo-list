@@ -15,10 +15,10 @@ describe('POST /login', () => {
   beforeEach(async () => {
     let salt = await bcrypt.genSalt(10);
     let john: User = new User();
-    john.firstName = 'John';
-    john.lastName = 'Doe';
-    john.email = 'johndoe@example.com';
-    john.password = await bcrypt.hash('johndoepassword', salt);
+    john.firstName = 'David';
+    john.lastName = 'Park';
+    john.email = 'davidpark@example.com';
+    john.password = await bcrypt.hash('davidparkpassword', salt);
     await userRepo.save(john);
   });
   afterEach(async () => await userRepo.clear());
@@ -32,8 +32,8 @@ describe('POST /login', () => {
 
   it('unregistered email', async () => {
     let response = await request(app).post('/login').send({
-      email: 'wrongjohndoe@example.com',
-      password: 'johndoepassword',
+      email: 'wrongdavidpark@example.com',
+      password: 'davidparkpassword',
     });
     expect(response.status).toBe(400);
     expect(response.body.data.success).toBe(false);
@@ -43,8 +43,8 @@ describe('POST /login', () => {
 
   it('wrong password', async () => {
     let response = await request(app).post('/login').send({
-      email: 'johndoe@example.com',
-      password: 'wrongjohndoepassword',
+      email: 'davidpark@example.com',
+      password: 'wrongdavidparkpassword',
     });
     expect(response.status).toBe(400);
     expect(response.body.data.success).toBe(false);
@@ -54,8 +54,8 @@ describe('POST /login', () => {
 
   it('valid credential', async () => {
     let response = await request(app).post('/login').send({
-      email: 'johndoe@example.com',
-      password: 'johndoepassword',
+      email: 'davidpark@example.com',
+      password: 'davidparkpassword',
     });
     expect(response.status).toBe(200);
     expect(response.body.data.success).toBe(true);
