@@ -1,3 +1,5 @@
-export const entities = [
+import { User } from './user';
 
+export const entities = [
+  User,
 ];
