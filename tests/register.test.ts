@@ -9,7 +9,9 @@ describe('POST /register', () => {
 
   beforeAll(async () => await dataSource.initialize());
   afterAll(async () => await dataSource.destroy());
-  afterEach(async () => await userRepo.clear());
+  afterEach(async () => {
+    await userRepo.createQueryBuilder().delete().execute();
+  });
 
   it('invalid payload', async () => {
     let response = await request(app).post('/register').send({});

@@ -21,7 +21,9 @@ describe('POST /login', () => {
     john.password = await bcrypt.hash('davidparkpassword', salt);
     await userRepo.save(john);
   });
-  afterEach(async () => await userRepo.clear());
+  afterEach(async () => {
+    await userRepo.createQueryBuilder().delete().execute();
+  });
 
   it('invalid payload', async () => {
     let response = await request(app).post('/login').send({});

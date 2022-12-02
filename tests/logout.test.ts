@@ -20,7 +20,9 @@ describe('POST /logout', () => {
     jason.password = await bcrypt.hash('jasonstathampassword', salt);
     await userRepo.save(jason);
   });
-  afterEach(async () => await userRepo.clear());
+  afterEach(async () => {
+    await userRepo.createQueryBuilder().delete().execute();
+  });
 
   it('should logout', async () => {
     let agent = request.agent(app);
