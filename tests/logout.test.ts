@@ -13,12 +13,12 @@ describe('POST /logout', () => {
 
   beforeEach(async () => {
     let salt = await bcrypt.genSalt(10);
-    let john: User = new User();
-    john.firstName = 'Jason';
-    john.lastName = 'Statham';
-    john.email = 'jasonstatham@example.com';
-    john.password = await bcrypt.hash('jasonstathampassword', salt);
-    await userRepo.save(john);
+    let jason: User = new User();
+    jason.firstName = 'Jason';
+    jason.lastName = 'Statham';
+    jason.email = 'jasonstatham@example.com';
+    jason.password = await bcrypt.hash('jasonstathampassword', salt);
+    await userRepo.save(jason);
   });
   afterEach(async () => await userRepo.clear());
 
