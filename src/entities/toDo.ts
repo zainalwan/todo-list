@@ -30,6 +30,7 @@ export class ToDo {
   })
   name: string;
 
+  @IsString()
   @Column({
     name: 'description',
     length: 200,
@@ -47,7 +48,10 @@ export class ToDo {
   dueDate: Date;
 
   @IsNotEmpty()
-  @ManyToOne(() => User, { nullable: false })
+  @ManyToOne(() => User, {
+    nullable: false,
+    eager: true,
+  })
   @JoinColumn({ name: 'assignee_id' })
   assigneeId: User;
 
