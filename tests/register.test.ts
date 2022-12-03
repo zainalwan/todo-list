@@ -20,7 +20,7 @@ describe('POST /register', () => {
     expect(response.body.data.errors.length).toBe(4);
   });
 
-  it('unique email', async () => {
+  it('not unique email', async () => {
     let john: User = new User();
     john.firstName = 'John';
     john.lastName = 'Doe';

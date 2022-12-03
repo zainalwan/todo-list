@@ -14,12 +14,12 @@ describe('POST /login', () => {
 
   beforeEach(async () => {
     let salt = await bcrypt.genSalt(10);
-    let john: User = new User();
-    john.firstName = 'David';
-    john.lastName = 'Park';
-    john.email = 'davidpark@example.com';
-    john.password = await bcrypt.hash('davidparkpassword', salt);
-    await userRepo.save(john);
+    let david: User = new User();
+    david.firstName = 'David';
+    david.lastName = 'Park';
+    david.email = 'davidpark@example.com';
+    david.password = await bcrypt.hash('davidparkpassword', salt);
+    await userRepo.save(david);
   });
   afterEach(async () => {
     await userRepo.createQueryBuilder().delete().execute();

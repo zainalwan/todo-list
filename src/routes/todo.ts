@@ -6,7 +6,7 @@ import { ResponseBody } from '../interfaces/responseBody';
 import { ToDo } from '../entities/toDo';
 import { User } from '../entities/user';
 import { dataSource } from '../dataSource';
-import jsonwebtoken from 'jsonwebtoken';
+import jsonwebtoken, { JwtPayload } from 'jsonwebtoken';
 import { serializeError } from '../util';
 import { validateOrReject } from 'class-validator';
 
@@ -39,10 +39,16 @@ router.post('/', async (req: Request, res: Response) => {
   let userRepo: Repository<User> = dataSource.getRepository(User);
   let toDoRepo: Repository<ToDo> = dataSource.getRepository(ToDo);
 
-  let assignee = await userRepo.findOneBy({ id: payload.assigneeId });
+  let givenToken: string = req.cookies[LOGIN_COOKIE_KEY];
+  let loginCookie = await jsonwebtoken.verify(givenToken, SECRET_KEY) as
+    JwtPayload;
+  let assignee: User | null = await userRepo.findOneBy({
+    email: loginCookie.email,
+  });
+
   let toDo = new ToDo();
   toDo.name = payload.name;
-  toDo.description = payload.description;
+  toDo.description = payload.description || '';
   toDo.dueDate = payload.dueDate;
   toDo.assigneeId = assignee!;
 

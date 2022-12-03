@@ -52,7 +52,7 @@ describe('POST /todo', () => {
 
     expect(response.status).toBe(400);
     expect(response.body.data.success).toBe(false);
-    expect(response.body.data.errors.length).toBe(3);
+    expect(response.body.data.errors.length).toBe(2);
   });
 
   it('valid payload', async () => {
@@ -67,9 +67,11 @@ describe('POST /todo', () => {
       dueDate: new Date(2022, 12, 10),
       assigneeId: tom.id,
     });
+    let toDos = await toDoRepo.find();
 
     expect(response.status).toBe(200);
     expect(response.body.data.success).toBe(true);
-    expect((await toDoRepo.find()).length).toBe(1);
+    expect(toDos.length).toBe(1);
+    expect(toDos[0].assigneeId).toEqual(tom);
   });
 });
