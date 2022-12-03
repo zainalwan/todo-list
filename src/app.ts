@@ -3,7 +3,7 @@ import express from 'express';
 import { router as loginRouter } from './routes/login';
 import { router as logoutRouter } from './routes/logout';
 import { router as registerRouter } from './routes/register';
-import { router as todoRouter } from './routes/todo';
+import { router as toDoRouter } from './routes/toDo';
 
 export const app = express();
 
@@ -14,4 +14,4 @@ app.use('/register', registerRouter);
 app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
 
-app.use('/todo', todoRouter);
+app.use('/todo', toDoRouter);
