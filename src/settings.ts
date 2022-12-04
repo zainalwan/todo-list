@@ -2,6 +2,8 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
+export const PORT = Number(process.env.PORT) || 0;
+
 export const SECRET_KEY = process.env.SECRET_KEY || '';
 export const LOGIN_COOKIE_KEY = process.env.LOGIN_COOKIE_KEY || '';
 
