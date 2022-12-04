@@ -62,5 +62,6 @@ describe('POST /login', () => {
     expect(response.status).toBe(200);
     expect(response.body.data.success).toBe(true);
     expect(response.headers['set-cookie'][0]).toMatch(LOGIN_COOKIE_KEY);
+    expect(response.headers['set-cookie'][0]).toMatch('HttpOnly');
   });
 });

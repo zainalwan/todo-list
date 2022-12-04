@@ -33,5 +33,7 @@ router.post('/', async (req: Request, res: Response) => {
   let token = await jsonwebtoken.sign({
     email: payload.email,
   }, SECRET_KEY);
-  res.status(200).cookie(LOGIN_COOKIE_KEY, token).send(body);
+  res.status(200)
+    .cookie(LOGIN_COOKIE_KEY, token, { httpOnly: true })
+    .send(body);
 });
