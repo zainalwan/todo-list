@@ -11,7 +11,7 @@ import { User } from '../entities/user';
 import { dataSource } from '../dataSource';
 
 const UniqueEmail = () => {
-  return (object: Register, propertyName: string) => {
+  return (object: RegisterDto, propertyName: string) => {
     registerDecorator({
       name: 'uniqueEmail',
       target: object.constructor,
@@ -29,7 +29,7 @@ const UniqueEmail = () => {
   };
 };
 
-export class Register {
+export class RegisterDto {
   @IsNotEmpty()
   @IsString()
   firstName: string;

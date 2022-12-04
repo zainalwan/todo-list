@@ -1,14 +1,17 @@
 import {
+  IsIn,
+  IsInt,
+  IsNotEmpty,
+  IsString,
   ValidationArguments,
   registerDecorator,
 } from 'class-validator';
-import { CreateToDoPayload } from './createToDoPayload';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user';
 import { dataSource } from '../dataSource';
 
-export const AssigneeExists = () => {
-  return (object: CreateToDoPayload, propertyName: string) => {
+const AssigneeExists = () => {
+  return (object: ToDoDto, propertyName: string) => {
     registerDecorator({
       name: 'assigneeExists',
       target: object.constructor,
@@ -25,3 +28,25 @@ export const AssigneeExists = () => {
     });
   };
 };
+
+export class ToDoDto {
+  @IsNotEmpty()
+  @IsString()
+  name: string;
+
+  @IsString()
+  description: string;
+
+  @IsNotEmpty()
+  @IsString()
+  dueDate: string;
+
+  @IsNotEmpty()
+  @IsIn(['inbox', 'ongoing', 'done'])
+  status: string;
+
+  @IsNotEmpty()
+  @IsInt()
+  @AssigneeExists()
+  assigneeId: number;
+}

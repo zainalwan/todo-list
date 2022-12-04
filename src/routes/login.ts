@@ -1,6 +1,6 @@
 import { LOGIN_COOKIE_KEY, SECRET_KEY } from '../settings';
 import express, { Request, Response } from 'express';
-import { Login } from '../dto/login';
+import { LoginDto } from '../dto/login';
 import { ResponseBody } from '../interfaces/responseBody';
 import jsonwebtoken from 'jsonwebtoken';
 import { serializeError } from '../util';
@@ -9,7 +9,7 @@ import { validateOrReject } from 'class-validator';
 export const router = express.Router();
 
 router.post('/', async (req: Request, res: Response) => {
-  let payload: Login = new Login;
+  let payload: LoginDto = new LoginDto();
   payload.email = req.body.email;
   payload.password = req.body.password;
 

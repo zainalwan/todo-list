@@ -11,7 +11,7 @@ import bcrypt from 'bcrypt';
 import { dataSource } from '../dataSource';
 
 const RegisteredEmail = () => {
-  return (object: Login, propertyName: string) => {
+  return (object: LoginDto, propertyName: string) => {
     registerDecorator({
       name: 'registeredEmail',
       target: object.constructor,
@@ -30,15 +30,15 @@ const RegisteredEmail = () => {
 };
 
 const CorrectPassword = () => {
-  return (object: Login, propertyName: string) => {
+  return (object: LoginDto, propertyName: string) => {
     registerDecorator({
       name: 'correctPassword',
       target: object.constructor,
       propertyName: propertyName,
       validator: {
         async validate(value: string, args: ValidationArguments) {
-          let email = (args.object as Login).email;
-
+          let email: string = '';
+          if (args.object instanceof LoginDto) email = args.object.email;
           if (!email) return true;
 
           let userRepo: Repository<User> = dataSource.getRepository(User);
@@ -58,7 +58,7 @@ const CorrectPassword = () => {
   };
 };
 
-export class Login {
+export class LoginDto {
   @IsNotEmpty()
   @IsEmail()
   @RegisteredEmail()

@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { serializeError, serializeToDo } from '../util';
-import { CreateToDoPayload } from '../validators/createToDoPayload';
+import { ToDoDto } from '../dto/toDo';
 import { Repository } from 'typeorm';
 import { ResponseBody } from '../interfaces/responseBody';
 import { ToDo } from '../entities/toDo';
@@ -27,7 +27,7 @@ router.delete('/:id', authorize, async (req: Request, res: Response) => {
 });
 
 router.post('/', async (req: Request, res: Response) => {
-  let payload: CreateToDoPayload = new CreateToDoPayload();
+  let payload: ToDoDto = new ToDoDto();
   payload.name = req.body.name;
   payload.description = req.body.description || '';
   payload.dueDate = req.body.dueDate;
