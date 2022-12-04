@@ -58,6 +58,17 @@ Content-Type: application/json
 ```
 
 ### Get To Do List
+
+```
+GET http://localhost/todo HTTP/1.1
+```
+
+or
+
+```
+GET http://localhost/todo?assignee_id={id} HTTP/1.1
+```
+
 ### Update To Do Fields
 
 ```
