@@ -18,7 +18,6 @@ router.get('/', async (req: Request, res: Response) => {
   let assigneeId = req.query.assignee_id;
   let toDoRepo: Repository<ToDo> = dataSource.getRepository(ToDo);
   let userRepo: Repository<User> = dataSource.getRepository(User);
-  let assignee: User;
   let toDos: ToDo[];
   let body: IResponseBody;
 
@@ -32,7 +31,10 @@ router.get('/', async (req: Request, res: Response) => {
     return res.status(200).send(body);
   }
 
-  if (isNaN(Number(assigneeId))) {
+  if (
+    isNaN(Number(assigneeId)) ||
+    (await userRepo.findOneBy({ id: Number(assigneeId) })) == null
+  ) {
     body = {
       data: {
         success: false,
@@ -42,32 +44,21 @@ router.get('/', async (req: Request, res: Response) => {
     return res.status(404).send(body);
   }
 
-  try {
-    await userRepo.findOneByOrFail({ id: Number(assigneeId) });
-    toDos = await toDoRepo.find({
-      relations: { assigneeId: true },
-      where: {
-        assigneeId: {
-          id: Number(assigneeId),
-        },
+  toDos = await toDoRepo.find({
+    relations: { assigneeId: true },
+    where: {
+      assigneeId: {
+        id: Number(assigneeId),
       },
-    });
-    body = {
-      data: {
-        success: true,
-        toDos: toDos.map(serializeToDo),
-      },
-    };
-    res.status(200).send(body);
-  } catch (err) {
-    body = {
-      data: {
-        success: false,
-        message: 'assignee not found',
-      },
-    };
-    res.status(404).send(body);
-  }
+    },
+  });
+  body = {
+    data: {
+      success: true,
+      toDos: toDos.map(serializeToDo),
+    },
+  };
+  res.status(200).send(body);
 });
 
 router.put('/:id', authorize, async (req: Request, res: Response) => {
@@ -91,14 +82,12 @@ router.put('/:id', authorize, async (req: Request, res: Response) => {
     return res.status(400).send(body);
   }
 
-  let userRepo: Repository<User> = dataSource.getRepository(User);
-  let toDoRepo: Repository<ToDo> = dataSource.getRepository(ToDo);
-  await toDoRepo.update(req.body.toDo.id, {
+  await dataSource.getRepository(ToDo).update(req.body.toDo.id, {
     name: toDoDto.name,
     description: toDoDto.description,
     dueDate: toDoDto.dueDate,
     status: toDoDto.status,
-    assigneeId: await userRepo.findOneByOrFail({
+    assigneeId: await dataSource.getRepository(User).findOneByOrFail({
       id: toDoDto.assigneeId,
     }),
   });
@@ -106,9 +95,11 @@ router.put('/:id', authorize, async (req: Request, res: Response) => {
   let body: IResponseBody = {
     data: {
       success: true,
-      toDo: serializeToDo(await toDoRepo.findOneByOrFail({
-        id: req.body.toDo.id,
-      })),
+      toDo: serializeToDo(
+        await dataSource.getRepository(ToDo).findOneByOrFail({
+          id: req.body.toDo.id,
+        })
+      ),
     },
   };
   res.status(200).send(body);
@@ -121,13 +112,13 @@ router.delete('/:id', authorize, async (req: Request, res: Response) => {
       toDo: serializeToDo(req.body.toDo),
     },
   };
-  let toDoRepo: Repository<ToDo> = dataSource.getRepository(ToDo);
-  toDoRepo.softDelete(Number(req.params.id));
+  await dataSource.getRepository(ToDo).softDelete(Number(req.params.id));
   res.status(200).send(body);
 });
 
 router.post('/', async (req: Request, res: Response) => {
   let payload: ToDoDto = new ToDoDto();
+
   payload.name = req.body.name;
   payload.description = req.body.description || '';
   payload.dueDate = req.body.dueDate;
@@ -146,24 +137,18 @@ router.post('/', async (req: Request, res: Response) => {
     return res.status(400).send(body);
   }
 
-  let userRepo: Repository<User> = dataSource.getRepository(User);
-  let toDoRepo: Repository<ToDo> = dataSource.getRepository(ToDo);
-
-  let assignee: User = await userRepo.findOneByOrFail({
-    id: payload.assigneeId,
-  });
-  let creator: User = await userRepo.findOneByOrFail({
-    email: req.body.loginCookie.email,
-  });
-
   let toDo = new ToDo();
   toDo.name = payload.name;
   toDo.description = payload.description;
   toDo.dueDate = new Date(payload.dueDate);
   toDo.status = payload.status;
-  toDo.assigneeId = assignee;
-  toDo.creatorId = creator;
-  await toDoRepo.save(toDo);
+  toDo.assigneeId = await dataSource.getRepository(User).findOneByOrFail({
+    id: payload.assigneeId,
+  });
+  toDo.creatorId = await dataSource.getRepository(User).findOneByOrFail({
+    email: req.body.loginCookie.email,
+  });
+  await dataSource.getRepository(ToDo).save(toDo);
 
   let body: IResponseBody = {
     data: {

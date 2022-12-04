@@ -10,13 +10,16 @@ export const router = express.Router();
 
 router.post('/', async (req: Request, res: Response) => {
   let payload: LoginDto = new LoginDto();
+  let token: string;
+  let body: IResponseBody;
+
   payload.email = req.body.email;
   payload.password = req.body.password;
 
   try {
     await validateOrReject(payload);
   } catch (err) {
-    let body: IResponseBody = {
+    body = {
       data: {
         success: false,
         errors: err.map(serializeErrorMsg),
@@ -25,14 +28,12 @@ router.post('/', async (req: Request, res: Response) => {
     return res.status(400).send(body);
   }
 
-  let body: IResponseBody = {
+  body = {
     data: {
       success: true,
     },
   };
-  let token = await jsonwebtoken.sign({
-    email: payload.email,
-  }, SECRET_KEY);
+  token = await jsonwebtoken.sign({ email: payload.email }, SECRET_KEY);
   res.status(200)
     .cookie(LOGIN_COOKIE_KEY, token, { httpOnly: true })
     .send(body);
