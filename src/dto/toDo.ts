@@ -5,6 +5,7 @@ import {
   IsString,
   ValidationArguments,
   registerDecorator,
+  IsDateString,
 } from 'class-validator';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user';
@@ -39,6 +40,7 @@ export class ToDoDto {
 
   @IsNotEmpty()
   @IsString()
+  @IsDateString()
   dueDate: string;
 
   @IsNotEmpty()
