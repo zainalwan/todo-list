@@ -1,14 +1,14 @@
+import {
+  ValidationArguments,
+  registerDecorator,
+} from 'class-validator';
+import { RegisterPayload } from './registerPayload';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user';
 import { dataSource } from '../dataSource';
-import {
-  registerDecorator,
-  ValidationOptions,
-  ValidationArguments,
-} from 'class-validator';
 
 export const UniqueEmail = () => {
-  return (object: Object, propertyName: string) => {
+  return (object: RegisterPayload, propertyName: string) => {
     registerDecorator({
       name: 'uniqueEmail',
       target: object.constructor,
@@ -24,4 +24,4 @@ export const UniqueEmail = () => {
       },
     });
   };
-}
+};
