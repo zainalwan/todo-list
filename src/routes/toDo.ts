@@ -14,6 +14,62 @@ export const router = express.Router();
 
 router.use(authenticated);
 
+router.get('/', async (req: Request, res: Response) => {
+  let assigneeId = req.query.assignee_id;
+  let toDoRepo: Repository<ToDo> = dataSource.getRepository(ToDo);
+  let userRepo: Repository<User> = dataSource.getRepository(User);
+  let assignee: User;
+  let toDos: ToDo[];
+  let body: IResponseBody;
+
+  if (assigneeId == undefined) {
+    body = {
+      data: {
+        success: true,
+        toDos: (await toDoRepo.find()).map(serializeToDo),
+      },
+    };
+    return res.status(200).send(body);
+  }
+
+  if (isNaN(Number(assigneeId))) {
+    body = {
+      data: {
+        success: false,
+        message: 'assignee not found',
+      },
+    };
+    return res.status(404).send(body);
+  }
+
+  try {
+    await userRepo.findOneByOrFail({ id: Number(assigneeId) });
+    toDos = await toDoRepo.find({
+      relations: { assigneeId: true },
+      where: {
+        assigneeId: {
+          id: Number(assigneeId),
+        },
+      },
+    });
+    body = {
+      data: {
+        success: true,
+        toDos: toDos.map(serializeToDo),
+      },
+    };
+    res.status(200).send(body);
+  } catch (err) {
+    body = {
+      data: {
+        success: false,
+        message: 'assignee not found',
+      },
+    };
+    res.status(404).send(body);
+  }
+});
+
 router.put('/:id', authorize, async (req: Request, res: Response) => {
   let toDoDto: ToDoDto = new ToDoDto();
 
