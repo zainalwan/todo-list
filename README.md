@@ -1,8 +1,69 @@
 # To Do List
 
 A simple to do list application with authentication & authorization support.
+Surely tt has input validation feature as well. Jump to usage section below
+for ideal example.
 
 Note: this guide is using Docker Compose version 2.
+
+## Usage
+
+Here are some examples of API call,
+
+### Register as A New User
+
+```
+POST http://localhost/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "johndoe@example.com",
+  "password": "johndoepassword"
+}
+```
+
+### Log In
+
+```
+POST http://localhost/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "johndoe@example.com",
+  "password": "johndoepassword"
+}
+```
+
+### Log Out
+
+```
+POST http://localhost/logout HTTP/1.1
+```
+
+### Create a Aew To Do
+
+```
+POST http://localhost/todo HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Task 1",
+  "description": "This is the task 1",
+  "dueDate": "2022-12-10",
+  "status": "inbox",          // "inbox", "ongoing", "done"
+  "assigneeId": 1,            // assigneeId is any ID of registered user
+}
+```
+
+### Get To Do List
+### Update To Do Status
+### Delete a To Do
+
+```
+DELETE http://localhost/todo/{id} HTTP/1.1
+```
 
 ## Deployment
 
@@ -15,7 +76,7 @@ $ docker compose \
   up -d
 ```
 
-## Development
+## Development and Test
 
 Start PostgreSQL server using Docker for convenience.
 
@@ -35,44 +96,3 @@ $ npm test
 $ npm run build
 $ npm start
 ```
-
-## Usage
-
-Here are some examples of API call,
-
-- Register as a new user
-
-```
-POST http://localhost/register HTTP/1.1
-Content-Type: application/json
-
-{
-  "firstName": "John",
-  "lastName": "Doe",
-  "email": "johndoe@example.com",
-  "password": "johndoepassword"
-}
-```
-
-- Log in
-
-```
-POST http://localhost/login HTTP/1.1
-Content-Type: application/json
-
-{
-  "email": "johndoe@example.com",
-  "password": "johndoepassword"
-}
-```
-
-- Log out
-
-```
-POST http://localhost/logout HTTP/1.1
-```
-
-- Create a new to do
-- Get to do list
-- Update to do status
-- Delete a to do
