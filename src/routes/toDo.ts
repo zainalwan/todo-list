@@ -98,7 +98,7 @@ router.put('/:id', authorize, async (req: Request, res: Response) => {
       toDo: serializeToDo(
         await dataSource.getRepository(ToDo).findOneByOrFail({
           id: req.body.toDo.id,
-        })
+        }),
       ),
     },
   };
