@@ -6,12 +6,25 @@ import { ResponseBody } from '../interfaces/responseBody';
 import { ToDo } from '../entities/toDo';
 import { User } from '../entities/user';
 import { authenticated } from '../middlewares/authenticated';
+import { authorize } from '../middlewares/authorize';
 import { dataSource } from '../dataSource';
 import { validateOrReject } from 'class-validator';
 
 export const router = express.Router();
 
 router.use(authenticated);
+
+router.delete('/:id', authorize, async (req: Request, res: Response) => {
+  let body: ResponseBody = {
+    data: {
+      success: true,
+      toDo: serializeToDo(req.body.toDo),
+    },
+  };
+  let toDoRepo: Repository<ToDo> = dataSource.getRepository(ToDo);
+  toDoRepo.softDelete(Number(req.params.id));
+  res.status(200).send(body);
+});
 
 router.post('/', async (req: Request, res: Response) => {
   let payload: CreateToDoPayload = new CreateToDoPayload();
