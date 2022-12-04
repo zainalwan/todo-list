@@ -6,12 +6,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsString,
-  MinLength,
-} from 'class-validator';
 
 @Entity('users')
 export class User {
@@ -20,8 +14,6 @@ export class User {
   })
   id: number;
 
-  @IsNotEmpty()
-  @IsString()
   @Column({
     name: 'first_name',
     length: 30,
@@ -29,8 +21,6 @@ export class User {
   })
   firstName: string;
 
-  @IsNotEmpty()
-  @IsString()
   @Column({
     name: 'last_name',
     length: 30,
@@ -38,9 +28,6 @@ export class User {
   })
   lastName: string;
 
-  @IsNotEmpty()
-  @IsString()
-  @IsEmail()
   @Column({
     name: 'email',
     length: 30,
@@ -49,9 +36,6 @@ export class User {
   })
   email: string;
 
-  @IsNotEmpty()
-  @IsString()
-  @MinLength(12)
   @Column({
     name: 'password',
     length: 100,
