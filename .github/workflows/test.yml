@@ -1,0 +1,44 @@
+name: Test
+
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    container: node:16.18.1-alpine
+
+    services:
+      postgres:
+        image: postgres:15.0-alpine
+        env:
+          POSTGRES_DB: todo
+          POSTGRES_USER: zain
+          POSTGRES_PASSWORD: ecfbd4dbebe2a64a374bbf666deb5ccb
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 3
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: npm ci
+      - run: npm run build
+      - run: npx typeorm migration:run -d dist/dataSource.js
+        env:
+          SECRET_KEY: 5536cb72638a3836f23f606c2c1654a3
+          LOGIN_COOKIE_KEY: 59a519e7ac7c5da5
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: 5432
+          POSTGRES_DB: todo
+          POSTGRES_USER: zain
+          POSTGRES_PASSWORD: ecfbd4dbebe2a64a374bbf666deb5ccb
+      - run: npm test
+        env:
+          SECRET_KEY: 5536cb72638a3836f23f606c2c1654a3
+          LOGIN_COOKIE_KEY: 59a519e7ac7c5da5
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: 5432
+          POSTGRES_DB: todo
+          POSTGRES_USER: zain
+          POSTGRES_PASSWORD: ecfbd4dbebe2a64a374bbf666deb5ccb
