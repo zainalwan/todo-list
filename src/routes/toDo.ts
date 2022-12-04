@@ -43,7 +43,7 @@ router.put('/:id', authorize, async (req: Request, res: Response) => {
     dueDate: toDoDto.dueDate,
     status: toDoDto.status,
     assigneeId: await userRepo.findOneByOrFail({
-      id: toDoDto.assigneeId
+      id: toDoDto.assigneeId,
     }),
   });
 
