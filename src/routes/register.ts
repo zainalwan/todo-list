@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { RegisterPayload } from '../validators/registerPayload';
+import { Register } from '../dto/register';
 import { Repository } from 'typeorm';
 import { ResponseBody } from '../interfaces/responseBody';
 import { User } from '../entities/user';
@@ -11,7 +11,7 @@ import { validateOrReject } from 'class-validator';
 export const router = express.Router();
 
 router.post('/', async (req: Request, res: Response) => {
-  let payload: RegisterPayload = new RegisterPayload();
+  let payload: Register = new Register();
   payload.firstName = req.body.firstName;
   payload.lastName = req.body.lastName;
   payload.email = req.body.email;

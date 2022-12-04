@@ -1,14 +1,17 @@
 import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  MinLength,
   ValidationArguments,
   registerDecorator,
 } from 'class-validator';
-import { RegisterPayload } from './registerPayload';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user';
 import { dataSource } from '../dataSource';
 
-export const UniqueEmail = () => {
-  return (object: RegisterPayload, propertyName: string) => {
+const UniqueEmail = () => {
+  return (object: Register, propertyName: string) => {
     registerDecorator({
       name: 'uniqueEmail',
       target: object.constructor,
@@ -25,3 +28,22 @@ export const UniqueEmail = () => {
     });
   };
 };
+
+export class Register {
+  @IsNotEmpty()
+  @IsString()
+  firstName: string;
+
+  @IsNotEmpty()
+  @IsString()
+  lastName: string;
+
+  @IsNotEmpty()
+  @IsEmail()
+  @UniqueEmail()
+  email: string;
+
+  @IsNotEmpty()
+  @MinLength(12)
+  password: string;
+}
