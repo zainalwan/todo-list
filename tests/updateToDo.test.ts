@@ -47,7 +47,24 @@ describe('PUT /todo/:id', () => {
     await userRepo.createQueryBuilder().delete().execute();
   });
 
-  it('creator changes status', async () => {
+  it('creator changes status valid', async () => {
+    let agent = request.agent(app);
+    await agent.post('/login').send({
+      email: 'tomcruise@example.com',
+      password: 'tomcruisepassword',
+    });
+    let response = await agent.put(`/todo/${task1.id}`).send({
+      status: 'invalid status',
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body.data.success).toBe(false);
+    expect(response.body.data.errors.length).toBe(1);
+    expect((await toDoRepo.findOneByOrFail({ id: task1.id })).status)
+      .toBe('inbox');
+  });
+
+  it('creator changes status valid', async () => {
     let agent = request.agent(app);
     await agent.post('/login').send({
       email: 'tomcruise@example.com',
@@ -64,6 +81,17 @@ describe('PUT /todo/:id', () => {
     expect(response.body.data.toDo.description).toBe('Changed desc');
 
     let task1New = await toDoRepo.findOneByOrFail({ id: task1.id });
+    expect(task1New.status).toBe('ongoing');
+    expect(task1New.description).toBe('Changed desc');
+
+    response = await agent.put(`/todo/${task1.id}`).send({});
+
+    expect(response.status).toBe(200);
+    expect(response.body.data.success).toBe(true);
+    expect(response.body.data.toDo.status).toBe('ongoing');
+    expect(response.body.data.toDo.description).toBe('Changed desc');
+
+    task1New = await toDoRepo.findOneByOrFail({ id: task1.id });
     expect(task1New.status).toBe('ongoing');
     expect(task1New.description).toBe('Changed desc');
   });
