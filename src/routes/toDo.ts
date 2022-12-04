@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import { serializeError, serializeToDo } from '../util';
 import { CreateToDoPayload } from '../validators/createToDoPayload';
 import { Repository } from 'typeorm';
 import { ResponseBody } from '../interfaces/responseBody';
@@ -6,7 +7,6 @@ import { ToDo } from '../entities/toDo';
 import { User } from '../entities/user';
 import { authorize } from '../middlewares/authorize';
 import { dataSource } from '../dataSource';
-import { serializeError } from '../util';
 import { validateOrReject } from 'class-validator';
 
 export const router = express.Router();
@@ -55,6 +55,7 @@ router.post('/', async (req: Request, res: Response) => {
   let body: ResponseBody = {
     data: {
       success: true,
+      toDo: serializeToDo(toDo),
     },
   };
   res.status(200).send(body);
