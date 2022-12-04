@@ -91,3 +91,18 @@ export const login = async (req: Request, res: Response) => {
   }, SECRET_KEY);
   res.status(200).cookie(LOGIN_COOKIE_KEY, token).send(body);
 };
+
+/**
+ * Clear login cookie.
+ * @param req request - The request object.
+ * @param res response - The response object.
+ * @returns {undefined}
+ */
+export const logout = async (req: Request, res: Response) => {
+  let body: ResponseBody = {
+    data: {
+      success: true,
+    },
+  };
+  return res.status(200).clearCookie(LOGIN_COOKIE_KEY).send(body);
+};
