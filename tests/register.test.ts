@@ -52,6 +52,8 @@ describe('POST /register', () => {
 
     expect(response.status).toBe(200);
     expect(response.body.data.success).toBe(true);
+    expect(response.body.data.user).not.toBeUndefined();
+    expect(response.body.data.user.email).toBe('johndoe@example.com');
     expect(users.length).toBe(1);
     expect(users[0].password).not.toBe('johndoepassword');
   });

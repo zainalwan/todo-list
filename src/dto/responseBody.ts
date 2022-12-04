@@ -28,6 +28,7 @@ export interface IResponseBody {
     success: boolean,
     errors?: IErrorMessage[],
     message?: string,
+    user?: IUser,
     toDo?: IToDo,
     toDos?: IToDo[],
   },
@@ -59,6 +60,7 @@ export const serializeUser = (user: User): IUser => {
     id: user.id,
     firstName: user.firstName,
     lastName: user.lastName,
+    email: user.email,
   };
 };
 
