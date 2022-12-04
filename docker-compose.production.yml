@@ -1,0 +1,22 @@
+services:
+  todo:
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      SECRET_KEY: 4397a211b5efb23d555f8248298665de
+      LOGIN_COOKIE_KEY: 3ab81192048a0618
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: todo
+      POSTGRES_USER: zain
+      POSTGRES_PASSWORD: a465098cd7e4cbe0854759cdf1260355
+
+  postgres:
+    expose:
+      - 5432
+    environment:
+      POSTGRES_DB: todo
+      POSTGRES_USER: zain
+      POSTGRES_PASSWORD: a465098cd7e4cbe0854759cdf1260355
