@@ -5,13 +5,13 @@ import { Repository } from 'typeorm';
 import { ResponseBody } from '../interfaces/responseBody';
 import { ToDo } from '../entities/toDo';
 import { User } from '../entities/user';
-import { authorize } from '../middlewares/authorize';
+import { authenticated } from '../middlewares/authenticated';
 import { dataSource } from '../dataSource';
 import { validateOrReject } from 'class-validator';
 
 export const router = express.Router();
 
-router.use(authorize);
+router.use(authenticated);
 
 router.post('/', async (req: Request, res: Response) => {
   let payload: CreateToDoPayload = new CreateToDoPayload();

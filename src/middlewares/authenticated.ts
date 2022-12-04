@@ -4,13 +4,13 @@ import jsonwebtoken, { JwtPayload } from 'jsonwebtoken';
 import { ResponseBody } from '../interfaces/responseBody';
 
 /**
- * Authorize user.
+ * Determinde is user authenticated.
  * @param req request - The request object.
  * @param res response - The response object.
  * @param next next function - Go to the next middleware/controller.
  * @returns {undefined}
  */
-export const authorize = async (
+export const authenticated = async (
   req: Request,
   res: Response,
   next: NextFunction,
