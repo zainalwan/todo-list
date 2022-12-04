@@ -1,7 +1,7 @@
 import { LOGIN_COOKIE_KEY, SECRET_KEY } from '../settings';
-import { ResponseBody } from '../interfaces/responseBody';
-import jsonwebtoken, { JwtPayload } from 'jsonwebtoken';
 import { NextFunction, Request, Response } from 'express';
+import jsonwebtoken, { JwtPayload } from 'jsonwebtoken';
+import { ResponseBody } from '../interfaces/responseBody';
 
 /**
  * Authorize user.
@@ -19,9 +19,9 @@ export const authorize = async (
   let body: ResponseBody = {
     data: {
       success: false,
-      message: 'you must login first'
-    }
-  }
+      message: 'you must login first',
+    },
+  };
 
   if (givenToken == undefined) {
     return res.status(401).send(body);
@@ -30,7 +30,7 @@ export const authorize = async (
   try {
     req.body.loginCookie = await jsonwebtoken.verify(
       givenToken,
-      SECRET_KEY
+      SECRET_KEY,
     ) as JwtPayload;
   } catch (err) {
     return res.status(401).send(body);

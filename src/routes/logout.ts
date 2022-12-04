@@ -1,5 +1,5 @@
-import { LOGIN_COOKIE_KEY } from '../settings';
 import express, { Request, Response } from 'express';
+import { LOGIN_COOKIE_KEY } from '../settings';
 import { ResponseBody } from '../interfaces/responseBody';
 
 export const router = express.Router();

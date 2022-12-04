@@ -1,13 +1,13 @@
+import express, { Request, Response } from 'express';
 import { CreateToDoPayload } from '../validators/createToDoPayload';
-import express, { NextFunction, Request, Response } from 'express';
 import { Repository } from 'typeorm';
 import { ResponseBody } from '../interfaces/responseBody';
 import { ToDo } from '../entities/toDo';
 import { User } from '../entities/user';
+import { authorize } from '../middlewares/authorize';
 import { dataSource } from '../dataSource';
 import { serializeError } from '../util';
 import { validateOrReject } from 'class-validator';
-import { authorize } from '../middlewares/authorize';
 
 export const router = express.Router();
 
@@ -48,8 +48,8 @@ router.post('/', async (req: Request, res: Response) => {
   toDo.description = payload.description;
   toDo.dueDate = new Date(payload.dueDate);
   toDo.status = payload.status;
-  toDo.assigneeId = assignee!;
-  toDo.creatorId = creator!;
+  if (assignee instanceof User) toDo.assigneeId = assignee;
+  if (creator instanceof User) toDo.creatorId = creator;
   await toDoRepo.save(toDo);
 
   let body: ResponseBody = {
