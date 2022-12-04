@@ -1,4 +1,3 @@
-import { LOGIN_COOKIE_KEY } from '../src/settings';
 import { Repository } from 'typeorm';
 import { ToDo } from '../src/entities/toDo';
 import { User } from '../src/entities/user';
