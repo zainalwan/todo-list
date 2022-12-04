@@ -53,12 +53,23 @@ Content-Type: application/json
   "description": "This is the task 1",
   "dueDate": "2022-12-10",
   "status": "inbox",          // "inbox", "ongoing", "done"
-  "assigneeId": 1,            // assigneeId is any ID of registered user
+  "assigneeId": 1             // assigneeId is any ID of registered user
 }
 ```
 
 ### Get To Do List
-### Update To Do Status
+### Update To Do Fields
+
+```
+PUT http://localhost/todo/{id} HTTP/1.1
+Content-Type: application/json
+
+{
+  "description": "New description",
+  "status": "done"            // "inbox", "ongoing", "done"
+}
+```
+
 ### Delete a To Do
 
 ```
