@@ -14,6 +14,50 @@ export const router = express.Router();
 
 router.use(authenticated);
 
+router.put('/:id', authorize, async (req: Request, res: Response) => {
+  let toDoDto: ToDoDto = new ToDoDto();
+
+  toDoDto.name = req.body.name || req.body.toDo.name;
+  toDoDto.description = req.body.description || req.body.toDo.description;
+  toDoDto.dueDate = req.body.dueDate || req.body.toDo.dueDate.toISOString();
+  toDoDto.status = req.body.status || req.body.toDo.status;
+  toDoDto.assigneeId = req.body.assigneeId || req.body.toDo.assigneeId.id;
+
+  try {
+    await validateOrReject(toDoDto);
+  } catch (err) {
+    let body: IResponseBody = {
+      data: {
+        success: false,
+        errors: err.map(serializeErrorMsg),
+      },
+    };
+    return res.status(400).send(body);
+  }
+
+  let userRepo: Repository<User> = dataSource.getRepository(User);
+  let toDoRepo: Repository<ToDo> = dataSource.getRepository(ToDo);
+  await toDoRepo.update(req.body.toDo.id, {
+    name: toDoDto.name,
+    description: toDoDto.description,
+    dueDate: toDoDto.dueDate,
+    status: toDoDto.status,
+    assigneeId: await userRepo.findOneByOrFail({
+      id: toDoDto.assigneeId
+    }),
+  });
+
+  let body: IResponseBody = {
+    data: {
+      success: true,
+      toDo: serializeToDo(await toDoRepo.findOneByOrFail({
+        id: req.body.toDo.id,
+      })),
+    },
+  };
+  res.status(200).send(body);
+});
+
 router.delete('/:id', authorize, async (req: Request, res: Response) => {
   let body: IResponseBody = {
     data: {
@@ -49,10 +93,10 @@ router.post('/', async (req: Request, res: Response) => {
   let userRepo: Repository<User> = dataSource.getRepository(User);
   let toDoRepo: Repository<ToDo> = dataSource.getRepository(ToDo);
 
-  let assignee: User | null = await userRepo.findOneBy({
+  let assignee: User = await userRepo.findOneByOrFail({
     id: payload.assigneeId,
   });
-  let creator: User | null = await userRepo.findOneBy({
+  let creator: User = await userRepo.findOneByOrFail({
     email: req.body.loginCookie.email,
   });
 
@@ -61,8 +105,8 @@ router.post('/', async (req: Request, res: Response) => {
   toDo.description = payload.description;
   toDo.dueDate = new Date(payload.dueDate);
   toDo.status = payload.status;
-  if (assignee instanceof User) toDo.assigneeId = assignee;
-  if (creator instanceof User) toDo.creatorId = creator;
+  toDo.assigneeId = assignee;
+  toDo.creatorId = creator;
   await toDoRepo.save(toDo);
 
   let body: IResponseBody = {
