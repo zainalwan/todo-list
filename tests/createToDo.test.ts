@@ -115,6 +115,7 @@ describe('POST /todo', () => {
 
     expect(response.status).toBe(200);
     expect(response.body.data.success).toBe(true);
+    expect(response.body.data.toDo).not.toBeUndefined();
     expect(toDos.length).toBe(1);
     expect(toDos[0].assigneeId).toEqual(john);
     expect(toDos[0].creatorId).toEqual(tom);
