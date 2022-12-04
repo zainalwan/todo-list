@@ -1,3 +1,4 @@
+import { LOGIN_COOKIE_KEY } from '../src/settings';
 import { Repository } from 'typeorm';
 import { ToDo } from '../src/entities/toDo';
 import { User } from '../src/entities/user';
@@ -38,13 +39,27 @@ describe('POST /todo', () => {
   });
 
   it('do not login', async () => {
-    let agent = request.agent(app);
-    let response = await agent.post('/todo').send({
+    let response = await request(app).post('/todo').send({
       name: 'Task 1',
       description: 'This is the task 1',
       dueDate: new Date(2022, 12, 10),
       assigneeId: tom.id,
     });
+
+    expect(response.status).toBe(401);
+    expect(response.body.data.success).toBe(false);
+    expect(response.body.data.message).toBe('you must login first');
+  });
+
+  it('invalid JWT', async () => {
+    let response = await request(app).post('/todo')
+      .set('Cookie', [`${LOGIN_COOKIE_KEY}=invalidjwt`])
+      .send({
+        name: 'Task 1',
+        description: 'This is the task 1',
+        dueDate: new Date(2022, 12, 10),
+        assigneeId: tom.id,
+      });
 
     expect(response.status).toBe(401);
     expect(response.body.data.success).toBe(false);
@@ -62,6 +77,25 @@ describe('POST /todo', () => {
     expect(response.status).toBe(400);
     expect(response.body.data.success).toBe(false);
     expect(response.body.data.errors.length).toBe(4);
+  });
+
+  it('assignee not found', async () => {
+    let agent = request.agent(app);
+    await agent.post('/login').send({
+      email: 'tomcruise@example.com',
+      password: 'tomcruisepassword',
+    });
+    let response = await agent.post('/todo').send({
+      name: 'Task 1',
+      description: 'This is the task 1',
+      dueDate: new Date(2022, 12, 10),
+      status: 'inbox',
+      assigneeId: john.id + 100,
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body.data.success).toBe(false);
+    expect(response.body.data.errors.length).toBe(1);
   });
 
   it('valid payload', async () => {

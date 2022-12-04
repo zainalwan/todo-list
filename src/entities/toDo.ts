@@ -8,10 +8,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import {
-  IsNotEmpty,
-  IsString,
-} from 'class-validator';
 import { User } from './user';
 
 @Entity('todos')
@@ -21,8 +17,6 @@ export class ToDo {
   })
   id: number;
 
-  @IsNotEmpty()
-  @IsString()
   @Column({
     name: 'name',
     length: 50,
@@ -30,7 +24,6 @@ export class ToDo {
   })
   name: string;
 
-  @IsString()
   @Column({
     name: 'description',
     length: 200,
@@ -39,7 +32,6 @@ export class ToDo {
   })
   description: string;
 
-  @IsNotEmpty()
   @Column({
     name: 'due_date',
     nullable: false,
@@ -47,8 +39,6 @@ export class ToDo {
   })
   dueDate: Date;
 
-  @IsNotEmpty()
-  @IsString()
   @Column({
     name: 'status',
     length: 10,
@@ -56,7 +46,6 @@ export class ToDo {
   })
   status: string;
 
-  @IsNotEmpty()
   @ManyToOne(() => User, {
     nullable: false,
     eager: true,
@@ -64,7 +53,6 @@ export class ToDo {
   @JoinColumn({ name: 'assignee_id' })
   assigneeId: User;
 
-  @IsNotEmpty()
   @ManyToOne(() => User, {
     nullable: false,
     eager: true,
