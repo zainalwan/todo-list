@@ -1,9 +1,9 @@
 import { LOGIN_COOKIE_KEY, SECRET_KEY } from '../settings';
 import express, { Request, Response } from 'express';
+import { IResponseBody } from '../dto/responseBody';
 import { LoginDto } from '../dto/login';
-import { ResponseBody } from '../interfaces/responseBody';
 import jsonwebtoken from 'jsonwebtoken';
-import { serializeError } from '../util';
+import { serializeErrorMsg } from '../dto/responseBody';
 import { validateOrReject } from 'class-validator';
 
 export const router = express.Router();
@@ -16,16 +16,16 @@ router.post('/', async (req: Request, res: Response) => {
   try {
     await validateOrReject(payload);
   } catch (err) {
-    let body: ResponseBody = {
+    let body: IResponseBody = {
       data: {
         success: false,
-        errors: err.map(serializeError),
+        errors: err.map(serializeErrorMsg),
       },
     };
     return res.status(400).send(body);
   }
 
-  let body: ResponseBody = {
+  let body: IResponseBody = {
     data: {
       success: true,
     },

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
+import { IResponseBody } from '../dto/responseBody';
 import { Repository } from 'typeorm';
-import { ResponseBody } from '../interfaces/responseBody';
 import { ToDo } from '../entities/toDo';
 import { dataSource } from '../dataSource';
 
@@ -16,7 +16,7 @@ export const authorize = async (
   res: Response,
   next: NextFunction,
 ) => {
-  let body: ResponseBody = {
+  let body: IResponseBody = {
     data: {
       success: false,
     },

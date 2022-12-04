@@ -37,7 +37,7 @@ const CorrectPassword = () => {
       propertyName: propertyName,
       validator: {
         async validate(value: string, args: ValidationArguments) {
-          let email: string = '';
+          let email = '';
           if (args.object instanceof LoginDto) email = args.object.email;
           if (!email) return true;
 

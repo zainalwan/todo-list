@@ -1,11 +1,11 @@
 import express, { Request, Response } from 'express';
+import { IResponseBody } from '../dto/responseBody';
 import { LOGIN_COOKIE_KEY } from '../settings';
-import { ResponseBody } from '../interfaces/responseBody';
 
 export const router = express.Router();
 
 router.post('/', async (req: Request, res: Response) => {
-  let body: ResponseBody = {
+  let body: IResponseBody = {
     data: {
       success: true,
     },

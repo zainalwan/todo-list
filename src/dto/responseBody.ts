@@ -1,16 +1,44 @@
-import { ErrorMessage } from './interfaces/errorMessage';
-import { ToDo as IToDo } from './interfaces/toDo';
-import { User as IUser } from './interfaces/user';
-import { ToDo } from './entities/toDo';
-import { User } from './entities/user';
+import { ToDo } from '../entities/toDo';
+import { User } from '../entities/user';
 import { ValidationError } from 'class-validator';
+
+export interface IErrorMessage {
+  field: string,
+  messages: string[],
+}
+
+export interface IUser {
+  id: number,
+  firstName: string,
+  lastName: string,
+}
+
+export interface IToDo {
+  id: number,
+  name: string,
+  description: string,
+  dueDate: Date,
+  status: string,
+  assigneeId: IUser,
+  creatorId: IUser,
+}
+
+export interface IResponseBody {
+  data: {
+    success: boolean,
+    errors?: IErrorMessage[],
+    message?: string,
+    toDo?: IToDo,
+    toDos?: IToDo[],
+  },
+}
 
 /**
  * Serialize validation error for response to the client.
  * @param err error - The validation error object
  * @returns The serialized error message
  */
-export const serializeError = (err: ValidationError): ErrorMessage => {
+export const serializeErrorMsg = (err: ValidationError): IErrorMessage => {
   let messages: string[] = [];
   for (let key in err.constraints) {
     messages.push(err.constraints[key]);
@@ -33,6 +61,7 @@ export const serializeUser = (user: User): IUser => {
     lastName: user.lastName,
   };
 };
+
 /**
  * Serialize to do entity for response to the client.
  * @param toDo to do - The to do entity

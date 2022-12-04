@@ -1,7 +1,7 @@
 import { LOGIN_COOKIE_KEY, SECRET_KEY } from '../settings';
 import { NextFunction, Request, Response } from 'express';
 import jsonwebtoken, { JwtPayload } from 'jsonwebtoken';
-import { ResponseBody } from '../interfaces/responseBody';
+import { IResponseBody } from '../dto/responseBody';
 
 /**
  * Determine is user authenticated.
@@ -16,7 +16,7 @@ export const authenticated = async (
   next: NextFunction,
 ) => {
   let givenToken: string = req.cookies[LOGIN_COOKIE_KEY];
-  let body: ResponseBody = {
+  let body: IResponseBody = {
     data: {
       success: false,
       message: 'you must login first',

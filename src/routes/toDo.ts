@@ -1,9 +1,9 @@
 import express, { Request, Response } from 'express';
-import { serializeError, serializeToDo } from '../util';
-import { ToDoDto } from '../dto/toDo';
+import { serializeErrorMsg, serializeToDo } from '../dto/responseBody';
+import { IResponseBody } from '../dto/responseBody';
 import { Repository } from 'typeorm';
-import { ResponseBody } from '../interfaces/responseBody';
 import { ToDo } from '../entities/toDo';
+import { ToDoDto } from '../dto/toDo';
 import { User } from '../entities/user';
 import { authenticated } from '../middlewares/authenticated';
 import { authorize } from '../middlewares/authorize';
@@ -15,7 +15,7 @@ export const router = express.Router();
 router.use(authenticated);
 
 router.delete('/:id', authorize, async (req: Request, res: Response) => {
-  let body: ResponseBody = {
+  let body: IResponseBody = {
     data: {
       success: true,
       toDo: serializeToDo(req.body.toDo),
@@ -37,10 +37,10 @@ router.post('/', async (req: Request, res: Response) => {
   try {
     await validateOrReject(payload);
   } catch (err) {
-    let body: ResponseBody = {
+    let body: IResponseBody = {
       data: {
         success: false,
-        errors: err.map(serializeError),
+        errors: err.map(serializeErrorMsg),
       },
     };
     return res.status(400).send(body);
@@ -65,7 +65,7 @@ router.post('/', async (req: Request, res: Response) => {
   if (creator instanceof User) toDo.creatorId = creator;
   await toDoRepo.save(toDo);
 
-  let body: ResponseBody = {
+  let body: IResponseBody = {
     data: {
       success: true,
       toDo: serializeToDo(toDo),

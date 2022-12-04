@@ -1,11 +1,11 @@
 import express, { Request, Response } from 'express';
+import { IResponseBody } from '../dto/responseBody';
 import { RegisterDto } from '../dto/register';
 import { Repository } from 'typeorm';
-import { ResponseBody } from '../interfaces/responseBody';
 import { User } from '../entities/user';
 import bcrypt from 'bcrypt';
 import { dataSource } from '../dataSource';
-import { serializeError } from '../util';
+import { serializeErrorMsg } from '../dto/responseBody';
 import { validateOrReject } from 'class-validator';
 
 export const router = express.Router();
@@ -20,10 +20,10 @@ router.post('/', async (req: Request, res: Response) => {
   try {
     await validateOrReject(payload);
   } catch (err) {
-    let body: ResponseBody = {
+    let body: IResponseBody = {
       data: {
         success: false,
-        errors: err.map(serializeError),
+        errors: err.map(serializeErrorMsg),
       },
     };
     return res.status(400).send(body);
@@ -41,7 +41,7 @@ router.post('/', async (req: Request, res: Response) => {
   let userRepo: Repository<User> = dataSource.getRepository(User);
   await userRepo.save(user);
 
-  let body: ResponseBody = {
+  let body: IResponseBody = {
     data: {
       success: true,
     },
