@@ -10,6 +10,7 @@ describe('POST /todo', () => {
   let userRepo: Repository<User> = dataSource.getRepository(User);
   let toDoRepo: Repository<ToDo> = dataSource.getRepository(ToDo);
   let tom: User;
+  let john: User;
 
   beforeAll(async () => await dataSource.initialize());
   afterAll(async () => await dataSource.destroy());
@@ -22,6 +23,14 @@ describe('POST /todo', () => {
     tom.email = 'tomcruise@example.com';
     tom.password = await bcrypt.hash('tomcruisepassword', salt);
     await userRepo.save(tom);
+
+    salt = await bcrypt.genSalt(10);
+    john = new User();
+    john.firstName = 'John';
+    john.lastName = 'Doe';
+    john.email = 'johndoe@example.com';
+    john.password = await bcrypt.hash('johndoepassword', salt);
+    await userRepo.save(john);
   });
   afterEach(async () => {
     await toDoRepo.createQueryBuilder().delete().execute();
@@ -52,7 +61,7 @@ describe('POST /todo', () => {
 
     expect(response.status).toBe(400);
     expect(response.body.data.success).toBe(false);
-    expect(response.body.data.errors.length).toBe(2);
+    expect(response.body.data.errors.length).toBe(4);
   });
 
   it('valid payload', async () => {
@@ -65,13 +74,15 @@ describe('POST /todo', () => {
       name: 'Task 1',
       description: 'This is the task 1',
       dueDate: new Date(2022, 12, 10),
-      assigneeId: tom.id,
+      status: 'inbox',
+      assigneeId: john.id,
     });
     let toDos = await toDoRepo.find();
 
     expect(response.status).toBe(200);
     expect(response.body.data.success).toBe(true);
     expect(toDos.length).toBe(1);
-    expect(toDos[0].assigneeId).toEqual(tom);
+    expect(toDos[0].assigneeId).toEqual(john);
+    expect(toDos[0].creatorId).toEqual(tom);
   });
 });

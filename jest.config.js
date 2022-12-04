@@ -4,7 +4,7 @@ module.exports = {
   testEnvironment: 'node',
   maxWorkers: 1,
   verbose: true,
-  collectCoverage: false,
+  collectCoverage: true,
   collectCoverageFrom: [
     './src/**/*.ts',
     '!./src/migrations/*.ts',

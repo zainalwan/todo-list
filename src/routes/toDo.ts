@@ -39,10 +39,14 @@ router.post('/', async (req: Request, res: Response) => {
   let userRepo: Repository<User> = dataSource.getRepository(User);
   let toDoRepo: Repository<ToDo> = dataSource.getRepository(ToDo);
 
+  let assignee: User | null = null;
+  if (payload.assigneeId) {
+    assignee = await userRepo.findOneBy({id: payload.assigneeId});
+  }
   let givenToken: string = req.cookies[LOGIN_COOKIE_KEY];
   let loginCookie = await jsonwebtoken.verify(givenToken, SECRET_KEY) as
     JwtPayload;
-  let assignee: User | null = await userRepo.findOneBy({
+  let creator: User | null = await userRepo.findOneBy({
     email: loginCookie.email,
   });
 
@@ -50,7 +54,9 @@ router.post('/', async (req: Request, res: Response) => {
   toDo.name = payload.name;
   toDo.description = payload.description || '';
   toDo.dueDate = payload.dueDate;
+  toDo.status = payload.status;
   toDo.assigneeId = assignee!;
+  toDo.creatorId = creator!;
 
   try {
     await validateOrReject(toDo);

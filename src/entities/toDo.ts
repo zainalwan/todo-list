@@ -48,12 +48,29 @@ export class ToDo {
   dueDate: Date;
 
   @IsNotEmpty()
+  @IsString()
+  @Column({
+    name: 'status',
+    length: 10,
+    nullable: false,
+  })
+  status: string;
+
+  @IsNotEmpty()
   @ManyToOne(() => User, {
     nullable: false,
     eager: true,
   })
   @JoinColumn({ name: 'assignee_id' })
   assigneeId: User;
+
+  @IsNotEmpty()
+  @ManyToOne(() => User, {
+    nullable: false,
+    eager: true,
+  })
+  @JoinColumn({ name: 'creator_id' })
+  creatorId: User;
 
   @CreateDateColumn({
     name: 'created_at',
