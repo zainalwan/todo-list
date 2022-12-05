@@ -65,7 +65,11 @@ router.put('/:id', authorize, async (req: Request, res: Response) => {
   let toDoDto: ToDoDto = new ToDoDto();
 
   toDoDto.name = req.body.name || req.body.toDo.name;
-  toDoDto.description = req.body.description || req.body.toDo.description;
+  if (req.body.description != undefined) {
+    toDoDto.description = req.body.description;
+  } else {
+    toDoDto.description = req.body.toDo.description;
+  }
   toDoDto.dueDate = req.body.dueDate || req.body.toDo.dueDate.toISOString();
   toDoDto.status = req.body.status || req.body.toDo.status;
   toDoDto.assigneeId = req.body.assigneeId || req.body.toDo.assigneeId.id;

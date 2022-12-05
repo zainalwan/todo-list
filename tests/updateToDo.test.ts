@@ -47,7 +47,7 @@ describe('PUT /todo/:id', () => {
     await userRepo.createQueryBuilder().delete().execute();
   });
 
-  it('creator changes status valid', async () => {
+  it('creator changes status invalid', async () => {
     let agent = request.agent(app);
     await agent.post('/login').send({
       email: 'tomcruise@example.com',
@@ -64,7 +64,7 @@ describe('PUT /todo/:id', () => {
       .toBe('inbox');
   });
 
-  it('creator changes status valid', async () => {
+  it('creator changes status & description valid', async () => {
     let agent = request.agent(app);
     await agent.post('/login').send({
       email: 'tomcruise@example.com',
@@ -94,5 +94,14 @@ describe('PUT /todo/:id', () => {
     task1New = await toDoRepo.findOneByOrFail({ id: task1.id });
     expect(task1New.status).toBe('ongoing');
     expect(task1New.description).toBe('Changed desc');
+
+    response = await agent.put(`/todo/${task1.id}`).send({ description: '', });
+
+    expect(response.status).toBe(200);
+    expect(response.body.data.success).toBe(true);
+    expect(response.body.data.toDo.description).toBe('');
+
+    task1New = await toDoRepo.findOneByOrFail({ id: task1.id });
+    expect(task1New.description).toBe('');
   });
 });
